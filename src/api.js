@@ -19,7 +19,8 @@ app.post('/', (req, res) => {
     const format = parseFormat(req.body.format || '{r}')
     const userDictionary = req.body.userdictionary || {}
     const converted = convert(req.body.text || '', true, userDictionary)
-    const grouped = ((req.body.group || '').toString() == 'true') ? group(converted) : converted
+    const merge = (req.body.merge || '').toString() == 'true'
+    const grouped = group(converted, merge)
     const stringified = ((req.body.stringify || '').toString() == 'true') ? stringify(grouped, format) : grouped
     const result = {result: stringified}
     res.send(JSON.stringify(result))

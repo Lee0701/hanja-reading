@@ -68,14 +68,20 @@ const type = (c) => {
     else if(isHanja(c)) return 'hanja'
     else return 'etc'
 }
-const group = (arr) => {
+const group = (arr, merge=false) => {
     const result = [['', '']]
     for(let [ainput, aoutput] of arr) {
         const [rinput, routput] = result.pop()
-        if(type(aoutput) == 'hanja' && type(routput) == 'hanja') result.push([rinput + ainput, routput + aoutput])
-        else if(type(aoutput) != type(routput)) result.push([rinput, routput], [ainput, aoutput])
-        else if(type(ainput) == type(rinput) && type(aoutput) == type(routput)) result.push([rinput + ainput, routput + aoutput])
-        else result.push([rinput, routput], [ainput, aoutput])
+        if(!rinput.length && !routput.length) {
+            result.push([ainput, aoutput])
+        } else if(type(ainput) == type(rinput) && type(aoutput) == type(routput)) {
+            if(!merge && type(ainput) == 'hanja' && type(aoutput) == 'hangul')
+                result.push([rinput, routput], [ainput, aoutput])
+            else
+                result.push([rinput + ainput, routput + aoutput])
+        } else {
+            result.push([rinput, routput], [ainput, aoutput])
+        }
     }
     return result.filter(([input, output]) => input.length && output.length)
 }
