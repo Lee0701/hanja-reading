@@ -1,8 +1,8 @@
 
-const express = require('express')
-const {convert, group, stringify} = require('./index')
+import express, { json, urlencoded } from 'express'
+import { convert, group, stringify } from './index.js'
 
-const parseFormat = (str) => {
+function parseFormat (str) {
     return (hanja, reading) => {
         return str.toLowerCase()
                 .replace(/\{(hanja|h)\}/g, hanja)
@@ -11,9 +11,9 @@ const parseFormat = (str) => {
 }
 
 const app = express()
-
-app.use(express.json({limit: '10mb'}))
-app.use(express.urlencoded({limit: '10mb', extended: true}))
+    
+app.use(json({limit: '10mb'}))
+app.use(urlencoded({limit: '10mb', extended: true}))
 
 app.post('/', (req, res) => {
     const format = parseFormat(req.body.format || '{r}')

@@ -1,5 +1,6 @@
 
-const fs = require('fs')
+import { readFileSync, writeFileSync } from 'fs'
+import { isHanja } from './index.js'
 
 const exceptions = {
     庫間: "곳간",
@@ -10,13 +11,17 @@ const exceptions = {
     回數: "횟수",
 }
 
+const additionalEntries = [
+    ['영', '〇'],
+]
+
 const singleCharReadings = Object.fromEntries(
-    fs.readFileSync('dic1.txt', 'utf8')
+    readFileSync('dic1.txt', 'utf8')
             .split('\n').filter((line) => !line.startsWith('#'))
             .map((line) => line.split('\t')).filter((entry) => entry.length == 2)
 )
 
-const content = fs.readFileSync('hanja.txt', 'utf8')
+const content = readFileSync('hanja.txt', 'utf8')
 const comments = content.split('\n').filter((line) => line.startsWith('#'))
 const entries = content.split('\n').filter((line) => !line.startsWith('#')).map((line) => line.trim().split(':')).filter((entry) => entry && entry.length == 3)
 
@@ -40,8 +45,11 @@ const legalWords = words.filter(([reading, hanja]) => {
 
 const legallyReadChars = chars.filter(([reading, hanja]) => !singleCharReadings[hanja] || singleCharReadings[hanja] == reading)
 
-const output = [...legallyReadChars, ...legalWords]
+const onlyHanja = [...legallyReadChars, ...legalWords]
+        .filter(([, hanja]) => hanja.split('').every((c) => isHanja(c)))
+
+const output = [...onlyHanja, ...additionalEntries]
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([reading, hanja]) => `${hanja}\t${reading}`).join('\n')
 
-fs.writeFileSync('dic/hanja.filtered.txt', comments.join('\n') + '\n' + output)
+writeFileSync('dic/hanja.filtered.txt', comments.join('\n') + '\n' + output)
