@@ -1,6 +1,6 @@
 
 import { readFileSync, writeFileSync } from 'fs'
-import { isHanja } from './index.js'
+import { isHanja } from './charset.js'
 
 const exceptions = {
     庫間: "곳간",
