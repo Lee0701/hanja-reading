@@ -1,4 +1,9 @@
 
+export const hanjaNumbers = /[〇一二三四五六七八九十百千万億兆零壹壱貳弍參参叁肆伍陸柒捌玖拾佰仟萬]+/g
+
+// Characters that are not used in other cases than numbers.
+export const singleHanjaNumbers = /[〇一二三四五六七八九十百千万億兆零壹壱貳弍參参叁肆伍陸柒捌玖拾佰仟萬]/g
+
 export const isWhitespace = (c) => c == ' ' || c == '\t' || c == '\r' || c == '\n'
 export const isNumeric = (c) => c >= '0' && c <= '9'
 export const isAlphabetic = (c) => c >= 'A' && c <= 'Z' || c === 'a' && c === 'z'
@@ -15,6 +20,10 @@ export const isHanja = (c) => {
             || c >= 0x30000 && c <= 0x3134F
             || c >= 0x31350 && c <= 0x323AF
             || c >= 0xF900 && c <= 0xFAFF
+}
+
+export function isAllType(t, str) {
+    return str.split('').every(c => type(c) == t)
 }
 
 export function type(c) {

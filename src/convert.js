@@ -2,10 +2,10 @@
 import { buildDict } from './dictionary.js'
 import { type, isHangulSyllable, initialSoundLaw } from './charset.js'
 
-const dic = buildDict('dic/hanja.filtered.txt')
-const jp = buildDict('dic/jp.txt')
-const cn = buildDict('dic/cn.txt')
-const MAX_LENGTH = 100
+export const dic = buildDict('dic/hanja.filtered.txt')
+export const jp = buildDict('dic/jp.txt')
+export const cn = buildDict('dic/cn.txt')
+export const MAX_LENGTH = 100
 
 export function convert(str, initial=true, userDictionary={}) {
     if(str.includes(' ')) return str.split(' ').map((word, i) => [...(i == 0 ? [] : [[' ', ' ']]), ...convert(word, true, userDictionary)]).flat()

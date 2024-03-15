@@ -1,6 +1,7 @@
 
 import express, { json, urlencoded } from 'express'
-import { convert, group, stringify } from './index.js'
+import { convert, group, stringify } from './convert.js'
+import { tokenizeAndConvert } from './tokenization.js'
 
 function parseFormat (str) {
     return (hanja, reading) => {
@@ -15,7 +16,7 @@ const app = express()
 app.use(json({limit: '10mb'}))
 app.use(urlencoded({limit: '10mb', extended: true}))
 
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
     const format = parseFormat(req.body.format || '{r}')
     const userDictionary = req.body.userdictionary || {}
     const converted = convert(req.body.text || '', true, userDictionary)
@@ -23,6 +24,7 @@ app.post('/', (req, res) => {
     const grouped = group(converted, merge)
     const stringified = ((req.body.stringify || '').toString() == 'true') ? stringify(grouped, format) : grouped
     const result = {result: stringified}
+    tokenizeAndConvert(req.body.text)
     res.send(JSON.stringify(result))
 })
 
